@@ -4,16 +4,38 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: ^3.7.0
+  sdk: ">=3.3.0 <4.0.0" # Kompatibel luas dengan Flutter stable (pastikan tidak terlalu tinggi agar plugin stabil)
 
 dependencies:
   flutter:
     sdk: flutter
 
+  # Firebase core modules
+  firebase_core: ^2.25.4
+  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.15.4
+  firebase_storage: ^11.5.0
+  firebase_storage_web: ^3.5.0 # Versi stabil yang aman untuk Web
+
+  # State management & auth
+  provider: ^6.1.2
+  google_sign_in: ^6.2.1
+  flutter_facebook_auth: ^6.0.3
+
+  # Charts and UI utilities
+  fl_chart: ^0.63.0
+  material_color_utilities: ^0.11.1
+  vector_math: ^2.1.4
+
+  # Web interop support
+  js: ^0.6.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^3.0.1 # Versi terbaru stabil (5.0.0 belum tersedia di semua channel)
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/aset/gambar/logo.png
