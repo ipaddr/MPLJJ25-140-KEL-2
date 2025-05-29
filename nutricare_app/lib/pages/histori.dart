@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+// ignore: use_key_in_widget_constructors
 class HistoriPage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _HistoriPageState createState() => _HistoriPageState();
 }
 
@@ -81,6 +83,7 @@ class _HistoriPageState extends State<HistoriPage> {
                       border: Border.all(color: Color(0xFF3CAD75), width: 1.5),
                       boxShadow: [
                         BoxShadow(
+                          // ignore: deprecated_member_use
                           color: Colors.black.withOpacity(0.05),
                           blurRadius: 4,
                           offset: const Offset(0, 2),

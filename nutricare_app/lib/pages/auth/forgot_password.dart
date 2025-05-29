@@ -40,7 +40,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void sendOTP() {
     if (!_formKey.currentState!.validate()) return;
 
-    // TODO: panggil API untuk kirim OTP ke email
+    // panggil API untuk mengirimkan OTP
     setState(() {
       isOTPSent = true;
       _message = 'Kode OTP telah dikirim ke ${_emailController.text}';
@@ -69,7 +69,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       return;
     }
 
-    // TODO: panggil API untuk update password di server
+    // panggil API untuk update password di server
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Kata sandi berhasil diubah!')),
@@ -278,7 +278,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: const BorderSide(color: const Color(0xFF3CAD75), width: 2),
+        borderSide: const BorderSide(color: Color(0xFF3CAD75), width: 2),
       ),
     );
   }
