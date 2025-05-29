@@ -14,6 +14,7 @@ import 'pages/profil.dart';
 import 'pages/edit_profil.dart';
 import 'pages/tambah_jadwal.dart';
 import 'pages/rekap_bulanan.dart';
+import 'pages/formulir.dart';
 
 void main() {
   runApp(const NutriCareApp());
@@ -29,7 +30,7 @@ class NutriCareApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.green,
-        scaffoldBackgroundColor: const Color(0xFFF3E092),
+        scaffoldBackgroundColor: const Color(0xFFFCFBFB),
         fontFamily: 'Roboto',
         appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF3CAD75)),
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -56,6 +57,7 @@ class NutriCareApp extends StatelessWidget {
         '/edit_profil': (context) => const EditProfilPage(),
         '/tambah_jadwal': (context) => const TambahJadwalPage(),
         '/rekap_bulanan': (context) => const RekapBulananPage(),
+        '/formulir': (context) => const FormulirGabungan(),
       },
     );
   }
