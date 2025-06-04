@@ -1,13 +1,8 @@
-// lib/main.dart
-
 import 'package:flutter/material.dart';
-
-// Auth
+import 'pages/auth/splash_screen.dart';
 import 'pages/auth/login.dart';
 import 'pages/auth/register.dart';
 import 'pages/auth/forgot_password.dart';
-
-// Halaman Utama
 import 'pages/home.dart';
 import 'pages/histori.dart';
 import 'pages/profil.dart';
@@ -43,16 +38,15 @@ class NutriCareApp extends StatelessWidget {
         ),
       ),
 
-      // Inisialisasi awal: halaman login
-      initialRoute: '/login',
+      initialRoute: '/splash',
 
-      // Definisi semua route
       routes: {
+        '/splash': (context) => SplashScreen(),
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/forgot': (context) => const ForgotPasswordPage(),
         '/home': (context) => const HomePage(),
-        '/histori': (context) =>  HistoriPage(),
+        '/histori': (context) => HistoriPage(),
         '/profil': (context) => const ProfilPage(),
         '/edit_profil': (context) => const EditProfilPage(),
         '/tambah_jadwal': (context) => const TambahJadwalPage(),
