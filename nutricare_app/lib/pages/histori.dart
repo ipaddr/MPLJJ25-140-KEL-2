@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-// ignore: use_key_in_widget_constructors
 class HistoriPage extends StatefulWidget {
+  const HistoriPage({super.key});
+
   @override
   // ignore: library_private_types_in_public_api
   _HistoriPageState createState() => _HistoriPageState();
@@ -16,15 +17,35 @@ class _HistoriPageState extends State<HistoriPage> {
     'Bantuan Ibu Hamil',
   ];
 
-  final List<Map<String, String>> historiData = List.generate(
-    4,
-    (index) => {
+  final List<Map<String, String>> historiData = [
+    {
+      'jenis': 'Bantuan Anak Sekolah',
       'nama': 'Zikri Ramadhan',
+      'gender': 'Laki-laki',
       'sekolah': 'SMKN 1 Kota Solok',
       'kelas': 'Kelas 12',
-      'tanggal': 'Tanggal 20 April 2025 , 10.00 am',
+      'tanggal': '20 April 2025',
     },
-  );
+    {
+      'jenis': 'Bantuan Balita',
+      'nama': 'Aqila Zahra',
+      'usia': '2 tahun',
+      'berat': '12 kg',
+      'tinggi': '85 cm',
+      'ortu': 'Rina Marlina',
+      'tanggal': '12 Mei 2025',
+    },
+    {
+      'jenis': 'Bantuan Ibu Hamil',
+      'nama': 'Sari Dewi',
+      'nik': '1234567890123456',
+      'usiaKehamilan': '28 minggu',
+      'alamat': 'Jl. Merpati No. 10',
+      'faskes': 'Puskesmas Harapan',
+      'telp': '081234567890',
+      'tanggal': '30 Mei 2025',
+    },
+  ];
 
   @override
   void initState() {
@@ -34,11 +55,14 @@ class _HistoriPageState extends State<HistoriPage> {
 
   @override
   Widget build(BuildContext context) {
+    final filteredData = historiData
+        .where((item) => item['jenis'] == selectedFilter)
+        .toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // Header
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -66,14 +90,12 @@ class _HistoriPageState extends State<HistoriPage> {
             ),
           ),
 
-          // Body content
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Dropdown filter yang diperbaiki
                   Container(
                     height: 48,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -94,10 +116,7 @@ class _HistoriPageState extends State<HistoriPage> {
                       child: DropdownButton<String>(
                         value: selectedFilter,
                         isExpanded: true,
-                        icon: const Icon(
-                          Icons.arrow_drop_down,
-                          color: Colors.black,
-                        ),
+                        icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black,
@@ -110,78 +129,37 @@ class _HistoriPageState extends State<HistoriPage> {
                         },
                         dropdownColor: const Color(0xFFFFF8DC),
                         borderRadius: BorderRadius.circular(10),
-                        items:
-                            filters.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                        items: filters.map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 12), // Jarak setelah filter
-                  // List histori
+                  const SizedBox(height: 12),
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
-                      itemCount: historiData.length,
+                      itemCount: filteredData.length,
                       itemBuilder: (context, index) {
-                        final item = historiData[index];
+                        final item = filteredData[index];
                         return Container(
-                          margin: const EdgeInsets.symmetric(vertical: 1),
+                          margin: const EdgeInsets.symmetric(vertical: 6),
                           child: Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: const BorderSide(
                                 color: Color(0xFF3CAD75),
-                                width: 2,
+                                width: 1.5,
                               ),
                             ),
                             elevation: 2,
                             child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item['nama']!,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(item['sekolah']!),
-                                  Text(item['kelas']!),
-                                  Text(item['tanggal']!),
-                                  const SizedBox(height: 12),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Color(0xFF3CAD75),
-                                          width: 2,
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: const Text(
-                                        'Disalurkan',
-                                        style: TextStyle(
-                                          color: Color(0xFF3CAD75),
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              child: _buildCardContent(item),
                             ),
                           ),
                         );
@@ -195,7 +173,6 @@ class _HistoriPageState extends State<HistoriPage> {
         ],
       ),
 
-      // Bottom Navigation Bar
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Color(0xFF3CAD75), width: 2)),
@@ -231,22 +208,76 @@ class _HistoriPageState extends State<HistoriPage> {
             },
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.list_alt),
-                label: 'Formulir',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.history),
-                label: 'Histori',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profil',
-              ),
+              BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Formulir'),
+              BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histori'),
+              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCardContent(Map<String, String> item) {
+    List<Widget> children = [];
+
+    void addField(String label, String? value) {
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 130,
+                child: Text(
+                  label,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+                child: Text(":", style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+              Expanded(child: Text(value ?? '-')),
+            ],
+          ),
+        ),
+      );
+    }
+
+    switch (item['jenis']) {
+      case 'Bantuan Anak Sekolah':
+        addField('Nama', item['nama']);
+        addField('Gender', item['gender']);
+        addField('Sekolah', item['sekolah']);
+        addField('Kelas', item['kelas']);
+        addField('Tanggal', item['tanggal']);
+        break;
+      case 'Bantuan Balita':
+        addField('Nama', item['nama']);
+        addField('Usia', item['usia']);
+        addField('Berat Badan', item['berat']);
+        addField('Tinggi Badan', item['tinggi']);
+        addField('Nama Orang Tua', item['ortu']);
+        addField('Tanggal', item['tanggal']);
+        break;
+      case 'Bantuan Ibu Hamil':
+        addField('Nama', item['nama']);
+        addField('NIK', item['nik']);
+        addField('Usia Kehamilan', item['usiaKehamilan']);
+        addField('Alamat', item['alamat']);
+        addField('Faskes Dikunjungi', item['faskes']);
+        addField('No. Telepon', item['telp']);
+        addField('Tanggal', item['tanggal']);
+        break;
+      default:
+        children.add(const Text('Data tidak tersedia'));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
     );
   }
 }

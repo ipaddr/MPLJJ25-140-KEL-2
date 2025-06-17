@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final Map<DateTime, List<Map<String, String>>> _events = {
-    DateTime.utc(2025, 5, 20): [
+    DateTime.utc(2025, 6, 30): [
       {
         'lokasi': 'SDN 24 Selayo',
         'jam': '09:00–11:00',

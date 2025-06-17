@@ -29,15 +29,15 @@ class _SplashScreenState extends State<SplashScreen> {
             // Logo NutriCare
             Image.asset(
               'assets/images/logo.png',
-              width: 300,
-              height: 300,
+              width: 200,
+              height: 200,
             ),
             SizedBox(height: 0),
             Text(
               'NutriCare',
               style: TextStyle(
                 fontFamily: 'Shrikhand',
-                fontSize: 45,
+                fontSize: 30,
                 color: const Color(0xFFF3E092),
               ),
             ),

@@ -9,7 +9,19 @@ class NutriCareApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'NutriCare',
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color>((
+            Set<MaterialState> states,
+          ) {
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xFF3CAD75);
+            }
+            return const Color(0xFFBDBDBD);
+          }),
+        ),
+      ),
       home: const FormulirGabungan(),
       debugShowCheckedModeBanner: false,
       routes: {
@@ -41,10 +53,10 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
 
   // Controller Anak Sekolah
   final TextEditingController namaCtrl = TextEditingController();
-  final TextEditingController genderCtrl = TextEditingController();
+  String? selectedGender;
+  String? selectedJenisSekolah;
   final TextEditingController usiaCtrl = TextEditingController();
   final TextEditingController asalSekolahCtrl = TextEditingController();
-  final TextEditingController jenisSekolahCtrl = TextEditingController();
   final TextEditingController kelasCtrl = TextEditingController();
 
   // Controller Balita
@@ -123,17 +135,26 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                     DropdownButtonFormField<String>(
                       value: selectedForm,
                       isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down, color: Color(0xFF3CAD75)),
-                      decoration: _inputDecoration(hintText: 'Pilih jenis formulir'),
-                      style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Color(0xFF3CAD75),
+                      ),
+                      decoration: _inputDecoration(
+                        hintText: 'Pilih jenis formulir',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black87,
+                      ),
                       dropdownColor: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      items: daftarFormulir.map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                      items:
+                          daftarFormulir.map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                       onChanged: (newValue) {
                         setState(() {
                           selectedForm = newValue!;
@@ -147,24 +168,54 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                         children: [
                           if (selectedForm == 'Bantuan Anak Sekolah') ...[
                             _buildTextField(namaCtrl, 'Nama'),
-                            _buildTextField(genderCtrl, 'Gender (L/P)'),
-                            _buildTextField(usiaCtrl, 'Usia'),
+                            _buildRadioGroup(
+                              'Gender',
+                              ['Laki-laki', 'Perempuan'],
+                              selectedGender,
+                              (value) {
+                                setState(() => selectedGender = value);
+                              },
+                            ),
                             _buildTextField(asalSekolahCtrl, 'Asal Sekolah'),
-                            _buildTextField(jenisSekolahCtrl, 'Jenis Sekolah (S/N)'),
+                            _buildRadioGroup(
+                              'Jenis Sekolah',
+                              ['Negeri', 'Swasta'],
+                              selectedJenisSekolah,
+                              (value) {
+                                setState(() => selectedJenisSekolah = value);
+                              },
+                            ),
                             _buildTextField(kelasCtrl, 'Kelas'),
                           ] else if (selectedForm == 'Bantuan Balita') ...[
                             _buildTextField(namaCtrl, 'Nama'),
                             _buildTextField(usiaBlnCtrl, 'Usia (bulan)'),
                             _buildTextField(beratCtrl, 'Berat Badan (kg)'),
                             _buildTextField(tinggiCtrl, 'Tinggi Badan (cm)'),
-                            _buildTextField(alergiCtrl, 'Alergi (jika ada)'),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 6.0,
+                              ),
+                              child: TextFormField(
+                                controller: alergiCtrl,
+                                decoration: _inputDecoration(
+                                  hintText: 'Alergi (jika ada)',
+                                ),
+                                keyboardType: TextInputType.text,
+                              ),
+                            ),
                             _buildTextField(ortuCtrl, 'Nama Orang Tua'),
                           ] else if (selectedForm == 'Bantuan Ibu Hamil') ...[
                             _buildTextField(namaCtrl, 'Nama'),
                             _buildTextField(nikCtrl, 'NIK'),
-                            _buildTextField(usiaHamilCtrl, 'Usia Kehamilan (minggu)'),
+                            _buildTextField(
+                              usiaHamilCtrl,
+                              'Usia Kehamilan (minggu)',
+                            ),
                             _buildTextField(alamatCtrl, 'Alamat'),
-                            _buildTextField(fasilitasCtrl, 'Alamat Fasilitas yang Dikunjungi'),
+                            _buildTextField(
+                              fasilitasCtrl,
+                              'Alamat Fasilitas yang Dikunjungi',
+                            ),
                             _buildTextField(telpCtrl, 'No. Telepon'),
                           ],
                         ],
@@ -175,21 +226,29 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Data formulir berhasil disimpan')),
+                            const SnackBar(
+                              content: Text('Data formulir berhasil disimpan'),
+                            ),
                           );
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3CAD75),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       child: const Text(
                         'SIMPAN',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ],
@@ -199,8 +258,6 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
           ),
         ],
       ),
-
-      // Bottom Navigation Bar
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Color(0xFF3CAD75), width: 2)),
@@ -256,7 +313,6 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
     );
   }
 
-  // Fungsi helper untuk Input Field
   Widget _buildTextField(TextEditingController controller, String label) {
     bool isAngka =
         label.toLowerCase().contains('usia') ||
@@ -282,7 +338,43 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
     );
   }
 
-  // Fungsi helper untuk dekorasi input
+  Widget _buildRadioGroup(
+    String label,
+    List<String> options,
+    String? selectedValue,
+    Function(String?) onChanged,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+          ),
+          Row(
+            children:
+                options.map((option) {
+                  return Expanded(
+                    child: Row(
+                      children: [
+                        Radio<String>(
+                          value: option,
+                          groupValue: selectedValue,
+                          onChanged: onChanged,
+                        ),
+                        Text(option),
+                      ],
+                    ),
+                  );
+                }).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
   InputDecoration _inputDecoration({required String hintText}) {
     return InputDecoration(
       hintText: hintText,
@@ -305,7 +397,6 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
   }
 }
 
-// Dummy Page untuk halaman navigasi lainnya
 class DummyPage extends StatelessWidget {
   final String title;
   const DummyPage({super.key, required this.title});
