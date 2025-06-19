@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // ⬅️ penting agar bisa pakai konfigurasi Firebase
+
 import 'pages/auth/splash_screen.dart';
 import 'pages/auth/login.dart';
 import 'pages/auth/register.dart';
@@ -11,7 +14,12 @@ import 'pages/tambah_jadwal.dart';
 import 'pages/rekap_bulanan.dart';
 import 'pages/formulir.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // ⬇️ Inisialisasi Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(const NutriCareApp());
 }
 
@@ -37,9 +45,7 @@ class NutriCareApp extends StatelessWidget {
           ),
         ),
       ),
-
       initialRoute: '/splash',
-
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => const LoginPage(),
