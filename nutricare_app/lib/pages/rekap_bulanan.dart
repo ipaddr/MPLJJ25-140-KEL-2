@@ -1,16 +1,113 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class RekapBulananPage extends StatelessWidget {
   const RekapBulananPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Data dummy lengkap
+    final List<Map<String, dynamic>> bantuanPerWilayah = [
+      {
+        'wilayah': 'Kabupaten Solok',
+        'anakSekolah': 80,
+        'balita': 50,
+        'ibuHamil': 25,
+      },
+      {
+        'wilayah': 'Kota Solok',
+        'anakSekolah': 40,
+        'balita': 15,
+        'ibuHamil': 10,
+      },
+      {
+        'wilayah': 'Kota Padang',
+        'anakSekolah': 30,
+        'balita': 10,
+        'ibuHamil': 5,
+      },
+    ];
+
+    // Hitung total per wilayah
+    for (var wilayah in bantuanPerWilayah) {
+      wilayah['total'] =
+          (wilayah['anakSekolah'] as int) +
+          (wilayah['balita'] as int) +
+          (wilayah['ibuHamil'] as int);
+    }
+
+    // Proses total seluruh wilayah
+    // ignore: unused_local_variable
+    final int totalAnak = bantuanPerWilayah.fold(
+      0,
+      (sum, item) => sum + (item['anakSekolah'] as int),
+    );
+    // ignore: unused_local_variable
+    final int totalBalita = bantuanPerWilayah.fold(
+      0,
+      (sum, item) => sum + (item['balita'] as int),
+    );
+    // ignore: unused_local_variable
+    final int totalIbuHamil = bantuanPerWilayah.fold(
+      0,
+      (sum, item) => sum + (item['ibuHamil'] as int),
+    );
+
+    // Tambahkan total keseluruhan ke masing-masing wilayah
+    for (var wilayah in bantuanPerWilayah) {
+      wilayah['total'] =
+          wilayah['anakSekolah'] + wilayah['balita'] + wilayah['ibuHamil'];
+    }
+
+    // Urutkan untuk cari wilayah dengan permintaan tertinggi
+    bantuanPerWilayah.sort((a, b) => b['total'].compareTo(a['total']));
+    final Map<String, dynamic> wilayahTertinggi = bantuanPerWilayah.first;
+
+    // Rekomendasi otomatis
+    final String rekomendasi =
+        'Utamakan wilayah ${wilayahTertinggi['wilayah']} karena total permintaannya tertinggi bulan ini (${wilayahTertinggi['total']} orang).';
+
+    // Widget rekomendasi
+    final rekomendasiWidget = Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFF3CAD75), width: 2),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.lightbulb, color: Color(0xFF3CAD75), size: 36),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              'Anak Sekolah: ${wilayahTertinggi['anakSekolah']}\n'
+              'Balita: ${wilayahTertinggi['balita']}\n'
+              'Ibu Hamil: ${wilayahTertinggi['ibuHamil']}\n\n'
+              '$rekomendasi',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    // Ambil nama bulan sekarang
+    initializeDateFormatting('id_ID', null);
+    final String namaBulan = DateFormat(
+      'MMMM yyyy',
+      'id_ID',
+    ).format(DateTime.now());
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: Column(
         children: [
-          // Header dari HomePage
+          // Header
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -37,211 +134,118 @@ class RekapBulananPage extends StatelessWidget {
               ],
             ),
           ),
-
-          // Konten halaman
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  20,
-                  14,
-                  20,
-                  22,
-                ), // Margin rapi
-                child: Column(
-                  children: [
-                    const SizedBox(height: 0),
-                    const Text(
-                      'Hasil Rekap Bulanan\nPembagian Bantuan',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Gambar dan Jumlah
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Image.asset(
-                              'assets/images/anak_sekolah.png',
-                              height: 60,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text('Anak Sekolah'),
-                            const Text(
-                              '150',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Image.asset('assets/images/balita.png', height: 60),
-                            const SizedBox(height: 4),
-                            const Text('Balita'),
-                            const Text(
-                              '75',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Image.asset(
-                              'assets/images/ibu_hamil.png',
-                              height: 60,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text('Ibu Hamil'),
-                            const Text(
-                              '35',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Chart (fl_chart)
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFF3CAD75), width: 2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      height: 280,
-                      child: BarChart(
-                        BarChartData(
-                          alignment: BarChartAlignment.spaceEvenly,
-                          maxY: 160,
-                          barTouchData: BarTouchData(enabled: false),
-                          titlesData: FlTitlesData(
-                            bottomTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                getTitlesWidget: (value, _) {
-                                  switch (value.toInt()) {
-                                    case 0:
-                                      return const Text('Sekolah');
-                                    case 1:
-                                      return const Text('Balita');
-                                    case 2:
-                                      return const Text('Ibu Hamil');
-                                    default:
-                                      return const SizedBox.shrink();
-                                  }
-                                },
-                              ),
-                            ),
-                            leftTitles: AxisTitles(
-                              sideTitles: SideTitles(
-                                showTitles: true,
-                                interval: 20,
-                                reservedSize: 32,
-                                getTitlesWidget: (value, _) {
-                                  return Text(
-                                    value.toInt().toString(),
-                                    style: const TextStyle(fontSize: 12),
-                                  );
-                                },
-                              ),
-                            ),
-                            topTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                            rightTitles: AxisTitles(
-                              sideTitles: SideTitles(showTitles: false),
-                            ),
-                          ),
-                          gridData: FlGridData(show: true),
-                          borderData: FlBorderData(show: false),
-                          barGroups: [
-                            BarChartGroupData(
-                              x: 0,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: 150,
-                                  color: Colors.lightBlue,
-                                  width: 24,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ],
-                            ),
-                            BarChartGroupData(
-                              x: 1,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: 75,
-                                  color: Colors.pinkAccent,
-                                  width: 24,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ],
-                            ),
-                            BarChartGroupData(
-                              x: 2,
-                              barRods: [
-                                BarChartRodData(
-                                  toY: 35,
-                                  color: Colors.green,
-                                  width: 24,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 22),
-
-                    // Saran Prioritas
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFF3CAD75), width: 2),
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.lightbulb,
-                            color: Color(0xFF3CAD75),
-                            size: 36,
-                          ),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Text(
-                              'Utamakan wilayah Kabupaten Solok yang memiliki permintaan tinggi',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+          Padding(
+            padding: const EdgeInsets.only(top: 18, bottom: 4),
+            child: Column(
+              children: [
+                const Text(
+                  'Hasil Rekap Bulanan',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text(
+                  'Bulan: $namaBulan',
+                  style: const TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+                const SizedBox(height: 2),
+                const Text(
+                  'Provinsi: Sumatera Barat',
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 22),
+              children: [
+                const SizedBox(height: 18),
+                const Text(
+                  'Grafik Bantuan per Wilayah',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+                // Chart (fl_chart)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: const Color(0xFF3CAD75),
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  height: 320,
+                  child: BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceEvenly,
+                      maxY: 160,
+                      barTouchData: BarTouchData(enabled: false),
+                      titlesData: FlTitlesData(
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, _) {
+                              final idx = value.toInt();
+                              if (idx >= 0 && idx < bantuanPerWilayah.length) {
+                                return Text(
+                                  bantuanPerWilayah[idx]['wilayah'],
+                                  style: const TextStyle(fontSize: 10),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            interval: 20,
+                            reservedSize: 32,
+                            getTitlesWidget: (value, _) {
+                              return Text(
+                                value.toInt().toString(),
+                                style: const TextStyle(fontSize: 12),
+                              );
+                            },
+                          ),
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                      ),
+                      gridData: FlGridData(show: true),
+                      borderData: FlBorderData(show: false),
+                      barGroups: List.generate(bantuanPerWilayah.length, (i) {
+                        return BarChartGroupData(
+                          x: i,
+                          barRods: [
+                            BarChartRodData(
+                              toY:
+                                  (bantuanPerWilayah[i]['total'] as int)
+                                      .toDouble(),
+                              color: Colors.lightBlue,
+                              width: 24,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 22),
+                // Saran Prioritas Otomatis
+                rekomendasiWidget,
+              ],
             ),
           ),
         ],
       ),
-
       // Bottom Navigation Bar dari HomePage
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -253,7 +257,7 @@ class RekapBulananPage extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 4),
+          padding: const EdgeInsets.only(bottom: 2),
           child: BottomNavigationBar(
             currentIndex: 0,
             selectedItemColor: const Color(0xFF3CAD75),

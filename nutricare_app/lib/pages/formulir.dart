@@ -12,10 +12,10 @@ class NutriCareApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
         radioTheme: RadioThemeData(
-          fillColor: MaterialStateProperty.resolveWith<Color>((
-            Set<MaterialState> states,
+          fillColor: WidgetStateProperty.resolveWith<Color>((
+            Set<WidgetState> states,
           ) {
-            if (states.contains(MaterialState.selected)) {
+            if (states.contains(WidgetState.selected)) {
               return const Color(0xFF3CAD75);
             }
             return const Color(0xFFBDBDBD);
@@ -53,11 +53,13 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
 
   // Controller Anak Sekolah
   final TextEditingController namaCtrl = TextEditingController();
+  final TextEditingController nomorUrutAbsenCtrl = TextEditingController();
   String? selectedGender;
-  String? selectedJenisSekolah;
   final TextEditingController usiaCtrl = TextEditingController();
   final TextEditingController asalSekolahCtrl = TextEditingController();
   final TextEditingController kelasCtrl = TextEditingController();
+  final TextEditingController waliKelasCtrl = TextEditingController();
+  final TextEditingController ortuAnakCtrl = TextEditingController();
 
   // Controller Balita
   final TextEditingController usiaBlnCtrl = TextEditingController();
@@ -68,6 +70,7 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
 
   // Controller Ibu Hamil
   final TextEditingController nikCtrl = TextEditingController();
+  final TextEditingController _usiaIbuHamilCtrl = TextEditingController();
   final TextEditingController usiaHamilCtrl = TextEditingController();
   final TextEditingController alamatCtrl = TextEditingController();
   final TextEditingController fasilitasCtrl = TextEditingController();
@@ -167,7 +170,7 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                       child: Column(
                         children: [
                           if (selectedForm == 'Bantuan Anak Sekolah') ...[
-                            _buildTextField(namaCtrl, 'Nama'),
+                            _buildTextField(namaCtrl, 'Nama Lengkap'),
                             _buildRadioGroup(
                               'Gender',
                               ['Laki-laki', 'Perempuan'],
@@ -176,18 +179,24 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                                 setState(() => selectedGender = value);
                               },
                             ),
-                            _buildTextField(asalSekolahCtrl, 'Asal Sekolah'),
-                            _buildRadioGroup(
-                              'Jenis Sekolah',
-                              ['Negeri', 'Swasta'],
-                              selectedJenisSekolah,
-                              (value) {
-                                setState(() => selectedJenisSekolah = value);
-                              },
+                            _buildTextField(
+                              nomorUrutAbsenCtrl,
+                              'Nomor Urut Absen',
                             ),
                             _buildTextField(kelasCtrl, 'Kelas'),
+                            _buildTextField(asalSekolahCtrl, 'Asal Sekolah'),
+                            _buildTextField(waliKelasCtrl, 'Nama Wali Kelas'),
+                            _buildTextField(ortuAnakCtrl, 'Nama Orang Tua'),
                           ] else if (selectedForm == 'Bantuan Balita') ...[
-                            _buildTextField(namaCtrl, 'Nama'),
+                            _buildTextField(namaCtrl, 'Nama Lengkap'),
+                            _buildRadioGroup(
+                              'Gender',
+                              ['Laki-laki', 'Perempuan'],
+                              selectedGender,
+                              (value) {
+                                setState(() => selectedGender = value);
+                              },
+                            ),
                             _buildTextField(usiaBlnCtrl, 'Usia (bulan)'),
                             _buildTextField(beratCtrl, 'Berat Badan (kg)'),
                             _buildTextField(tinggiCtrl, 'Tinggi Badan (cm)'),
@@ -205,16 +214,23 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                             ),
                             _buildTextField(ortuCtrl, 'Nama Orang Tua'),
                           ] else if (selectedForm == 'Bantuan Ibu Hamil') ...[
-                            _buildTextField(namaCtrl, 'Nama'),
+                            _buildTextField(namaCtrl, 'Nama Lengkap'),
                             _buildTextField(nikCtrl, 'NIK'),
+                            _buildTextField(
+                              _usiaIbuHamilCtrl,
+                              'Usia Ibu Hamil (tahun)', // Label baru
+                            ),
                             _buildTextField(
                               usiaHamilCtrl,
                               'Usia Kehamilan (minggu)',
                             ),
-                            _buildTextField(alamatCtrl, 'Alamat'),
+                            _buildTextField(
+                              alamatCtrl,
+                              'Alamat Tempat Tinggal',
+                            ),
                             _buildTextField(
                               fasilitasCtrl,
-                              'Alamat Fasilitas yang Dikunjungi',
+                              'Faskes yang Dikunjungi',
                             ),
                             _buildTextField(telpCtrl, 'No. Telepon'),
                           ],
@@ -231,6 +247,14 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
                             ),
                           );
                         }
+                        namaCtrl.clear();
+                        usiaCtrl.clear();
+                        asalSekolahCtrl.clear();
+                        kelasCtrl.clear();
+                        nomorUrutAbsenCtrl.clear();
+                        selectedGender = null;
+                        ortuCtrl.clear();
+                        waliKelasCtrl.clear();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3CAD75),
@@ -316,7 +340,9 @@ class _FormulirGabunganState extends State<FormulirGabungan> {
   Widget _buildTextField(TextEditingController controller, String label) {
     bool isAngka =
         label.toLowerCase().contains('usia') ||
-        label.toLowerCase().contains('kelas') ||
+        label.toLowerCase().contains('kelas') &&
+            !label.toLowerCase().contains('wali') || // Perbaikan di sini
+        label.toLowerCase().contains('nomor urut absen') ||
         label.toLowerCase().contains('berat') ||
         label.toLowerCase().contains('tinggi') ||
         label.toLowerCase().contains('no') ||

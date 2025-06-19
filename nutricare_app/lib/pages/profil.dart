@@ -9,7 +9,7 @@ class ProfilPage extends StatelessWidget {
   const ProfilPage({
     super.key,
     this.petugasName = 'Zikri Ramadhan',
-    this.role = 'Petugas Sekolah',
+    this.role = 'Petugas Lapangan',
     this.email = 'zikriramadhan@gmail.com',
   });
 

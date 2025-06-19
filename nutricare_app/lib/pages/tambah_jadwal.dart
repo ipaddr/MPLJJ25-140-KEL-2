@@ -11,6 +11,7 @@ class TambahJadwalPage extends StatefulWidget {
 class _TambahJadwalPageState extends State<TambahJadwalPage> {
   final TextEditingController tanggalController = TextEditingController();
   final TextEditingController waktuController = TextEditingController();
+  final TextEditingController lokasiController = TextEditingController();
   final TextEditingController catatanController = TextEditingController();
 
   String selectedJenis = 'Bantuan Anak Sekolah';
@@ -150,6 +151,12 @@ class _TambahJadwalPageState extends State<TambahJadwalPage> {
                       readOnly: true,
                       onTap: _selectDate,
                       decoration: _inputDecoration(hintText: 'dd/mm/yyyy'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Tanggal wajib diisi';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 5),
 
@@ -160,6 +167,28 @@ class _TambahJadwalPageState extends State<TambahJadwalPage> {
                       readOnly: true,
                       onTap: _selectTime,
                       decoration: _inputDecoration(hintText: '08:00'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Waktu wajib diisi';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 5),
+
+                    // Lokasi Pembagian
+                    _buildLabel("Lokasi Pembagian"),
+                    TextFormField(
+                      controller: lokasiController,
+                      decoration: _inputDecoration(
+                        hintText: 'Contoh: Aula sekolah',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Lokasi pembagian wajib diisi';
+                        }
+                        return null;
+                      },
                     ),
                     const SizedBox(height: 5),
 
@@ -167,9 +196,12 @@ class _TambahJadwalPageState extends State<TambahJadwalPage> {
                     _buildLabel("Catatan"),
                     TextFormField(
                       controller: catatanController,
-                      maxLines: 3,
+                      minLines: 3, // minimal 3 baris
+                      maxLines:
+                          null, // tidak dibatasi, akan bertambah sesuai isi
                       decoration: _inputDecoration(
-                        hintText: 'Contoh: Di aula sekolah',
+                        hintText:
+                            'Contoh: Perlu koordinasi dengan kader RT ',
                       ),
                     ),
 
@@ -310,7 +342,7 @@ class _TambahJadwalPageState extends State<TambahJadwalPage> {
         value: value,
         child: Text(
           value,
-          style: const TextStyle(fontSize: 14, color: Colors.black87),
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
         ),
       );
     }).toList();

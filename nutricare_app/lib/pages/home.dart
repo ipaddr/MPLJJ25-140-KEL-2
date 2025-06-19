@@ -8,7 +8,7 @@ class HomePage extends StatefulWidget {
   const HomePage({
     super.key,
     this.petugasName = 'Zikri Ramadhan',
-    this.role = 'Petugas Sekolah',
+    this.role = 'Petugas Lapangan',
   });
 
   @override
@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final Map<DateTime, List<Map<String, String>>> _events = {
-    DateTime.utc(2025, 6, 30): [
+    DateTime.utc(2025, 6, 28): [
       {
         'lokasi': 'SDN 24 Selayo',
         'jam': '09:00–11:00',
@@ -36,103 +36,120 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      body: Column(
-        children: [
-          // Header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: const BoxDecoration(
-              color: Color(0xFF3CAD75),
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24),
-                bottomRight: Radius.circular(24),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/logo.png', height: 50),
-                const SizedBox(width: 1),
-                const Text(
-                  'NutriCare',
-                  style: TextStyle(
-                    fontFamily: 'Shrikhand',
-                    fontSize: 28,
-                    color: Color(0xFFF3E092),
+      body: SafeArea(
+        top: false,
+        bottom: true,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: const BoxDecoration(
+                  color: Color(0xFF3CAD75),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24),
+                    bottomRight: Radius.circular(24),
                   ),
                 ),
-              ],
-            ),
-          ),
-
-          // Body content
-          Expanded(
-            child: Container(
-              color: const Color(0xFFF5F5F5),
-              padding: const EdgeInsets.fromLTRB(16, 16, 14, 0),
-              child: ListView(
-                padding: const EdgeInsets.only(bottom: 18),
-                children: [
-                  Text(
-                    'Hallo, ${widget.petugasName}',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(widget.role, style: const TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 20),
-
-                  // Shortcut buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: _buildShortcutButton(
-                          color: const Color(0xFF3CD9A2),
-                          label: 'Tambah Jadwal',
-                          icon: Icons.add,
-                          onTap:
-                              () => Navigator.pushNamed(
-                                context,
-                                '/tambah_jadwal',
-                              ),
-                        ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/images/logo.png', height: 50),
+                    const SizedBox(width: 1),
+                    const Text(
+                      'NutriCare',
+                      style: TextStyle(
+                        fontFamily: 'Shrikhand',
+                        fontSize: 28,
+                        color: Color(0xFFF3E092),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: _buildShortcutButton(
-                          color: const Color(0xFFF6E29C),
-                          label: 'Rekap Bulanan',
-                          icon: Icons.insert_chart,
-                          onTap:
-                              () => Navigator.pushNamed(
-                                context,
-                                '/rekap_bulanan',
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 18),
-                  const Text(
-                    'Jadwal Pemberian Bantuan',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Calendar
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF3CAD75), width: 2),
-                      borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.all(12),
-                    child: SizedBox(
-                      height: 320,
+                  ],
+                ),
+              ),
+
+              // Body content
+              Container(
+                color: const Color(0xFFF5F5F5),
+                padding: const EdgeInsets.fromLTRB(
+                  16,
+                  16,
+                  14,
+                  24,
+                ), // tambahkan bottom padding lebih besar
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Hallo, ${widget.petugasName}',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      widget.role,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Shortcut Buttons
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildShortcutButton(
+                            color: const Color(0xFF3CD9A2),
+                            label: 'Tambah Jadwal',
+                            icon: Icons.add,
+                            onTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  '/tambah_jadwal',
+                                ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildShortcutButton(
+                            color: const Color(0xFFF6E29C),
+                            label: 'Rekap Bulanan',
+                            icon: Icons.insert_chart,
+                            onTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  '/rekap_bulanan',
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 18),
+                    const Text(
+                      'Jadwal Pemberian Bantuan',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Kalender
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: const Color(0xFF3CAD75),
+                          width: 2,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.all(12),
                       child: TableCalendar(
                         firstDay: DateTime.utc(2024, 1, 1),
                         lastDay: DateTime.utc(2026, 12, 31),
@@ -148,8 +165,6 @@ class _HomePageState extends State<HomePage> {
                         headerStyle: const HeaderStyle(
                           formatButtonVisible: false,
                           titleCentered: true,
-                          leftChevronVisible: false,
-                          rightChevronVisible: false,
                         ),
                         calendarStyle: const CalendarStyle(
                           todayDecoration: BoxDecoration(
@@ -171,41 +186,88 @@ class _HomePageState extends State<HomePage> {
                         },
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-                  // Event List
-                  if (_selectedDay == null)
-                    const Center(child: Text('Pilih tanggal di atas'))
-                  else if (_selectedEvents.isEmpty)
-                    const Center(
-                      child: Text(
-                        'Tidak ada jadwal pembagian pada tanggal ini',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    )
-                  else
-                    ..._selectedEvents.map((item) {
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        child: ListTile(
-                          title: Text(item['lokasi']!),
-                          subtitle: Text(
-                            '${item['jam']} • ${item['jenis']} • ${item['estimasi']}',
-                          ),
-                          trailing: TextButton(
-                            onPressed: () {},
-                            child: const Text('Lihat / Edit'),
-                          ),
+                    // List Jadwal
+                    if (_selectedDay == null)
+                      const Center(child: Text('Pilih tanggal di atas'))
+                    else if (_selectedEvents.isEmpty)
+                      const Center(
+                        child: Text(
+                          'Tidak ada jadwal pembagian pada tanggal ini',
+                          style: TextStyle(color: Colors.grey),
                         ),
-                      );
-                    }),
-                ],
+                      )
+                    else
+                      ..._selectedEvents.asMap().entries.map((entry) {
+                        final idx = entry.key;
+                        final item = entry.value;
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 6),
+                          child: ListTile(
+                            title: Text(item['lokasi']!),
+                            subtitle: Text(
+                              '${item['jam']} • ${item['jenis']} • ${item['estimasi']}',
+                            ),
+                            trailing: TextButton(
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder:
+                                      (context) => AlertDialog(
+                                        title: const Text('Konfirmasi Hapus'),
+                                        content: const Text(
+                                          'Yakin ingin menghapus jadwal ini?',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(
+                                                  context,
+                                                  false,
+                                                ),
+                                            child: const Text('Batal'),
+                                          ),
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(
+                                                  context,
+                                                  true,
+                                                ),
+                                            child: const Text('Hapus'),
+                                          ),
+                                        ],
+                                      ),
+                                );
+                                if (confirm == true) {
+                                  setState(() {
+                                    final dateKey = DateTime.utc(
+                                      _selectedDay!.year,
+                                      _selectedDay!.month,
+                                      _selectedDay!.day,
+                                    );
+                                    _events[dateKey]?.removeAt(idx);
+                                    if (_events[dateKey]?.isEmpty ?? false) {
+                                      _events.remove(dateKey);
+                                    }
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Hapus',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                  ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
 
       // Bottom Navigation Bar

@@ -17,21 +17,26 @@ class _HistoriPageState extends State<HistoriPage> {
     'Bantuan Ibu Hamil',
   ];
 
-  final List<Map<String, String>> historiData = [
+  List<Map<String, String>> historiData = [
     {
       'jenis': 'Bantuan Anak Sekolah',
       'nama': 'Zikri Ramadhan',
       'gender': 'Laki-laki',
-      'sekolah': 'SMKN 1 Kota Solok',
+      'absen': '07',
       'kelas': 'Kelas 12',
+      'sekolah': 'SMKN 1 Kota Solok',
+      'wali': 'Ibu Fitriani',
+      'ortu': 'Rina Marlina',
       'tanggal': '20 April 2025',
     },
     {
       'jenis': 'Bantuan Balita',
       'nama': 'Aqila Zahra',
-      'usia': '2 tahun',
-      'berat': '12 kg',
-      'tinggi': '85 cm',
+      'gender': 'Perempuan',
+      'usia': '24',
+      'berat': '12',
+      'tinggi': '85',
+      'alergi': 'Tidak Ada',
       'ortu': 'Rina Marlina',
       'tanggal': '12 Mei 2025',
     },
@@ -39,7 +44,8 @@ class _HistoriPageState extends State<HistoriPage> {
       'jenis': 'Bantuan Ibu Hamil',
       'nama': 'Sari Dewi',
       'nik': '1234567890123456',
-      'usiaKehamilan': '28 minggu',
+      'usiaIbu': '32',
+      'usiaKehamilan': '28',
       'alamat': 'Jl. Merpati No. 10',
       'faskes': 'Puskesmas Harapan',
       'telp': '081234567890',
@@ -55,9 +61,8 @@ class _HistoriPageState extends State<HistoriPage> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredData = historiData
-        .where((item) => item['jenis'] == selectedFilter)
-        .toList();
+    final filteredData =
+        historiData.where((item) => item['jenis'] == selectedFilter).toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -116,7 +121,10 @@ class _HistoriPageState extends State<HistoriPage> {
                       child: DropdownButton<String>(
                         value: selectedFilter,
                         isExpanded: true,
-                        icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.black,
+                        ),
                         style: const TextStyle(
                           fontSize: 14,
                           color: Colors.black,
@@ -129,12 +137,13 @@ class _HistoriPageState extends State<HistoriPage> {
                         },
                         dropdownColor: const Color(0xFFFFF8DC),
                         borderRadius: BorderRadius.circular(10),
-                        items: filters.map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
+                        items:
+                            filters.map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
                       ),
                     ),
                   ),
@@ -158,7 +167,10 @@ class _HistoriPageState extends State<HistoriPage> {
                             ),
                             elevation: 2,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 14,
+                              ),
                               child: _buildCardContent(item),
                             ),
                           ),
@@ -208,9 +220,18 @@ class _HistoriPageState extends State<HistoriPage> {
             },
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Beranda'),
-              BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: 'Formulir'),
-              BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histori'),
-              BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profil'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list_alt),
+                label: 'Formulir',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.history),
+                label: 'Histori',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profil',
+              ),
             ],
           ),
         ),
@@ -229,7 +250,7 @@ class _HistoriPageState extends State<HistoriPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                width: 130,
+                width: 170,
                 child: Text(
                   label,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -248,32 +269,89 @@ class _HistoriPageState extends State<HistoriPage> {
 
     switch (item['jenis']) {
       case 'Bantuan Anak Sekolah':
-        addField('Nama', item['nama']);
+        addField('Nama Lengkap', item['nama']);
         addField('Gender', item['gender']);
-        addField('Sekolah', item['sekolah']);
+        addField('Nomor Urut Absen', item['absen']);
         addField('Kelas', item['kelas']);
-        addField('Tanggal', item['tanggal']);
+        addField('Asal Sekolah', item['sekolah']);
+        addField('Nama Wali Kelas', item['wali']);
+        addField('Nama Orang Tua', item['ortu']);
+        addField('Tanggal Penginputan', item['tanggal']);
         break;
       case 'Bantuan Balita':
-        addField('Nama', item['nama']);
-        addField('Usia', item['usia']);
-        addField('Berat Badan', item['berat']);
-        addField('Tinggi Badan', item['tinggi']);
+        addField('Nama Lengkap', item['nama']);
+        addField('Gender', item['gender']);
+        addField('Usia (bulan)', item['usia']);
+        addField('Berat Badan (kg)', item['berat']);
+        addField('Tinggi Badan (cm)', item['tinggi']);
+        addField('Alergi (Jika Ada)', item['alergi']);
         addField('Nama Orang Tua', item['ortu']);
-        addField('Tanggal', item['tanggal']);
+        addField('Tanggal Penginputan', item['tanggal']);
         break;
       case 'Bantuan Ibu Hamil':
-        addField('Nama', item['nama']);
+        addField('Nama Lengkap', item['nama']);
         addField('NIK', item['nik']);
-        addField('Usia Kehamilan', item['usiaKehamilan']);
-        addField('Alamat', item['alamat']);
-        addField('Faskes Dikunjungi', item['faskes']);
-        addField('No. Telepon', item['telp']);
-        addField('Tanggal', item['tanggal']);
+        addField('Usia Ibu Hamil (tahun)', item['usiaIbu']);
+        addField('Usia Kehamilan (minggu)', item['usiaKehamilan']);
+        addField('Alamat Tempat Tinggal', item['alamat']);
+        addField('Faskes yang dikunjugi', item['faskes']);
+        addField('No.Telp', item['telp']);
+        addField('Tanggal Penginputan', item['tanggal']);
         break;
       default:
         children.add(const Text('Data tidak tersedia'));
     }
+
+    // Tambahkan tombol hapus setelah seluruh field
+    children.add(
+      Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder:
+                    (context) => AlertDialog(
+                      title: const Text('Konfirmasi Hapus'),
+                      content: const Text(
+                        'Apakah Anda yakin ingin menghapus data ini?',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Batal'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Ya'),
+                        ),
+                      ],
+                    ),
+              );
+
+              if (confirm == true) {
+                setState(() {
+                  historiData.remove(item);
+                });
+              }
+            },
+            icon: const Icon(Icons.delete, size: 14, color: Colors.white),
+            label: const Text('Hapus'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red.shade600,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              textStyle: const TextStyle(fontSize: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
