@@ -11,21 +11,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _login() {
-    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    if (username.isEmpty || password.isEmpty) {
-      // Tampilkan peringatan jika kosong
+    if (email.isEmpty || password.isEmpty) {
       showDialog(
         context: context,
         builder:
             (_) => AlertDialog(
               title: const Text('Peringatan'),
-              content: const Text('Nama pengguna dan kata sandi wajib diisi.'),
+              content: const Text('Email dan kata sandi wajib diisi.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
@@ -34,11 +33,25 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
       );
-    } else {
-      // Jika tidak kosong, arahkan ke HomePage
+    } else if (email == 'user@dummy.com' && password == 'password123') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: const Text('Login Gagal'),
+              content: const Text('Email atau kata sandi salah.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
       );
     }
   }
@@ -89,8 +102,8 @@ class _LoginPageState extends State<LoginPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
-                    controller: _usernameController,
-                    decoration: _inputDecoration('Nama Pengguna'),
+                    controller: _emailController,
+                    decoration: _inputDecoration('Email'),
                   ),
                   const SizedBox(height: 12),
                   TextField(

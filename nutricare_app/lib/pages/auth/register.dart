@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -10,13 +12,16 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _selectedRole = 'Petugas Kesehatan';
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _kodePetugasController = TextEditingController();
+
+  // Kode petugas yang valid
+  static const String _kodePetugasValid =
+      'PETUGAS123';
 
   @override
   Widget build(BuildContext context) {
@@ -62,47 +67,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    DropdownButtonFormField<String>(
-                      value: _selectedRole,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedRole = value!;
-                        });
-                      },
-                      icon: Image.asset(
-                        'assets/images/arrow_down_icon.png',
-                        width: 24,
-                        height: 24,
-                      ),
-                      decoration: _inputDecoration('Peran'),
-                      borderRadius: BorderRadius.circular(10),
-                      dropdownColor: Colors.white,
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'Petugas Kesehatan',
-                          child: Text('Petugas Kesehatan'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Petugas Sekolah',
-                          child: Text('Petugas Sekolah'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    TextFormField(
-                      controller: _usernameController,
-                      decoration: _inputDecoration('Nama Pengguna'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Nama pengguna wajib diisi';
-                        } else if (value.contains(' ') ||
-                            value != value.toLowerCase()) {
-                          return 'Nama pengguna harus huruf kecil dan tanpa spasi';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 10),
                     TextFormField(
                       controller: _nameController,
                       decoration: _inputDecoration('Nama Lengkap'),
@@ -155,18 +119,35 @@ class _RegisterPageState extends State<RegisterPage> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: _kodePetugasController,
+                      decoration: _inputDecoration('Kode Petugas'),
+                      obscureText: false,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Kode petugas wajib diisi';
+                        } else if (value != _kodePetugasValid) {
+                          return 'Kode petugas salah';
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 20),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Aksi jika semua valid
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Pendaftaran berhasil!'),
+                                duration: Duration(seconds: 1),
                               ),
                             );
+                            Future.delayed(const Duration(seconds: 1), () {
+                              Navigator.pushReplacementNamed(context, '/login');
+                            });
                           }
                         },
                         style: ElevatedButton.styleFrom(

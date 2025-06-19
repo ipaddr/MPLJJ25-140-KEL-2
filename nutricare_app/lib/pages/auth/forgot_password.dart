@@ -17,35 +17,49 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
 
+  // Tambahkan list email terdaftar di sini
+  final List<String> emailTerdaftar = [
+    '1@email.com',
+    '2@email.com',
+    '3@email.com',
+  ];
+
   bool isOTPSent = false;
   bool isOTPVerified = false;
   String _message = '';
   int _secondsRemaining = 0;
   Timer? _timer;
 
-  void startTimer() {
-    _secondsRemaining = 60;
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_secondsRemaining > 0) {
-          _secondsRemaining--;
-        } else {
-          timer.cancel();
-        }
-      });
-    });
-  }
-
+  // Modifikasi fungsi sendOTP
   void sendOTP() {
     if (!_formKey.currentState!.validate()) return;
 
-    // panggil API untuk mengirimkan OTP
+    if (!emailTerdaftar.contains(_emailController.text)) {
+      setState(() {
+        _message = 'Email tidak terdaftar. Silakan daftar terlebih dahulu.';
+      });
+      return;
+    }
+
     setState(() {
       isOTPSent = true;
       _message = 'Kode OTP telah dikirim ke ${_emailController.text}';
     });
     startTimer();
+  }
+
+  void startTimer() {
+    _secondsRemaining = 60;
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsRemaining > 0) {
+        setState(() {
+          _secondsRemaining--;
+        });
+      } else {
+        timer.cancel();
+      }
+    });
   }
 
   void verifyOTP() {
@@ -135,10 +149,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       keyboardType: TextInputType.emailAddress,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Email wajib diisi';
+                          return 'Email tidak boleh kosong';
                         }
                         final regex = RegExp(
-                          r'^[\w\-\.]+@([\w\-]+\.)+[a-zA-Z]{2,4}$',
+                          r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                         );
                         if (!regex.hasMatch(value)) {
                           return 'Format email tidak valid';
@@ -146,41 +160,27 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         return null;
                       },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
 
                     // Tombol kirim OTP
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed:
-                            (_secondsRemaining == 0 && !isOTPSent)
-                                ? sendOTP
-                                : null,
+                        onPressed: sendOTP,
                         style: _buttonStyle(),
-                        child: Text(
-                          _secondsRemaining == 0
-                              ? 'Kirim Kode OTP'
-                              : 'Kirim ulang dalam $_secondsRemaining s',
-                        ),
+                        child: const Text('Kirim Kode OTP'),
                       ),
                     ),
 
                     // Input OTP setelah dikirim
                     if (isOTPSent) ...[
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       TextFormField(
                         controller: _otpController,
-                        decoration: _inputDecoration('Masukkan OTP'),
+                        decoration: _inputDecoration('Masukkan Kode OTP'),
                         keyboardType: TextInputType.number,
-                        validator: (_) {
-                          if (!isOTPSent) return null;
-                          if (_otpController.text.isEmpty)
-                            // ignore: curly_braces_in_flow_control_structures
-                            return 'OTP wajib diisi';
-                          return null;
-                        },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -193,39 +193,45 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                     // Form ganti password setelah OTP terverifikasi
                     if (isOTPVerified) ...[
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       TextFormField(
                         controller: _newPasswordController,
                         decoration: _inputDecoration('Kata Sandi Baru'),
                         obscureText: true,
-                        validator: (_) {
-                          if (!isOTPVerified) return null;
-                          if (_newPasswordController.text.isEmpty) {
-                            return 'Kata sandi wajib diisi';
+                        validator: (value) {
+                          if (isOTPVerified &&
+                              (value == null || value.isEmpty)) {
+                            return 'Kata sandi baru tidak boleh kosong';
+                          }
+                          if (value != null && value.length < 6) {
+                            return 'Minimal 6 karakter';
                           }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 5),
                       TextFormField(
                         controller: _confirmPasswordController,
                         decoration: _inputDecoration('Konfirmasi Kata Sandi'),
                         obscureText: true,
-                        validator: (_) {
-                          if (!isOTPVerified) return null;
-                          if (_confirmPasswordController.text.isEmpty) {
-                            return 'Konfirmasi kata sandi wajib diisi';
+                        validator: (value) {
+                          if (isOTPVerified &&
+                              (value == null || value.isEmpty)) {
+                            return 'Konfirmasi kata sandi tidak boleh kosong';
+                          }
+                          if (value != _newPasswordController.text) {
+                            return 'Kata sandi tidak cocok';
                           }
                           return null;
                         },
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: saveNewPassword,
                           style: _buttonStyle(),
-                          child: const Text('Simpan Kata Sandi'),
+                          child: const Text('Simpan Kata Sandi Baru'),
                         ),
                       ),
                     ],
@@ -233,15 +239,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     // Pesan kesalahan / info
                     if (_message.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.only(top: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         child: Text(
                           _message,
-                          textAlign: TextAlign.center,
                           style: const TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
                         ),
                       ),
 
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 10),
+
                     // Kembali ke login
                     GestureDetector(
                       onTap: () {
@@ -251,8 +258,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         );
                       },
                       child: const Text(
-                        'Sudah ingat kata sandi? Masuk di sini',
+                        'Kembali ke Login',
                         style: TextStyle(color: Color(0xFF3CAD75)),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ],
